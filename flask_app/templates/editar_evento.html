@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Editar Evento</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+	</head>
+
+	<body>
+		{% block content %}
+		<div class="container mt-5">
+			<h1 class="text-center">Detalles del Evento</h1>
+			<div class="card-footer text-end p-3">
+				<a href="{{ url_for('dashboard') }}" class="btn btn-secondary"
+					>Inicio</a
+				>
+				<a href="{{ url_for('logout') }}" class="btn btn-danger"
+					>Cerrar Sesión</a
+				>
+			</div>
+
+			{# Mostrar mensajes flash #} {% with messages =
+			get_flashed_messages(with_categories=true) %} {% if messages %}
+			<div class="flash-messages">
+				{% for category, message in messages %}
+				<div
+					class="alert {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show"
+					role="alert"
+				>
+					{{ message }}
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="alert"
+						aria-label="Close"
+					></button>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %} {% endwith %}
+
+			<div class="card">
+				<div class="card-header">
+					<h4>Editar Evento</h4>
+				</div>
+				<div class="card-body">
+					<form
+						id="editEventForm"
+						action="{{ url_for('actualizar_evento') }}"
+						method="POST"
+					>
+						<input
+							type="hidden"
+							id="id"
+							name="id"
+							value="{{ data.id_evento }}"
+						/>
+
+						<div class="form-group">
+							<label for="nombre">Nombre del Evento</label>
+							<input
+								type="text"
+								id="nombre"
+								name="nombre"
+								class="form-control"
+								required
+								value="{{ data.nombre if data else '' }}"
+							/>
+						</div>
+
+						<div class="form-group">
+							<label for="ubicacion">Ubicación</label>
+							<input
+								type="text"
+								id="ubicacion"
+								name="ubicacion"
+								class="form-control"
+								required
+								value="{{ data.ubicacion if data else '' }}"
+							/>
+						</div>
+
+						<div class="form-group">
+							<label for="fechaInicio">Fecha de Inicio</label>
+							<input
+								type="datetime-local"
+								id="fechaInicio"
+								name="fechaInicio"
+								class="form-control"
+								required
+								min="{{ today }}"
+								value="{{ data.fecha_inicio if data else '' }}"
+							/>
+						</div>
+
+						<div class="form-group">
+							<label for="detalles">Detalles</label>
+							<textarea
+								id="detalles"
+								name="detalles"
+								class="form-control"
+								required
+							>
+{{ data.detalles if data else '' }}</textarea
+							>
+						</div>
+
+						<div class="buttons mt-3">
+							<button type="submit" class="btn btn-success">
+								Actualizar Evento
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- para que podamos cerrar los mensajes flash -->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		</div>
+
+		{% endblock %}
+	</body>
+</html>

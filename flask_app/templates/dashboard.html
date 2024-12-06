@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Eventos</title>
+		<!-- Bootstrap 5 CDN -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+	</head>
+
+	<body>
+		<div class="container mt-5">
+			<header class="d-flex justify-content-between align-items-center mb-4">
+				<h1>¡Bienvenid@ {{ usuario.nombre }}!</h1>
+				<div>
+					<a href="{{ url_for('nuevo_evento') }}" class="btn btn-primary"
+						>Crear Evento</a
+					>
+					<a href="{{ url_for('logout') }}" class="btn btn-danger"
+						>Cerrar Sesión</a
+					>
+				</div>
+			</header>
+
+			{# Mostrar mensajes flash #} {% with messages =
+			get_flashed_messages(with_categories=true) %} {% if messages %}
+			<div class="flash-messages">
+				{% for category, message in messages %}
+				<div
+					class="alert {% if category == 'success' %}alert-success{% elif category == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show"
+					role="alert"
+				>
+					{{ message }}
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="alert"
+						aria-label="Close"
+					></button>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %} {% endwith %}
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Evento</th>
+						<th>Ubicación</th>
+						<th>Fecha del evento</th>
+						<th>Publicado Por</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for evento in eventos %}
+					<tr>
+						<td>{{ evento.nombre }}</td>
+						<td>{{ evento.ubicacion }}</td>
+						<td>{{ evento.fecha_inicio.strftime('%Y-%m-%d %H:%M') }}</td>
+						<td>{{ evento.organizador }}</td>
+						<td>
+							<a
+								href="{{ url_for('ver_evento', id=evento.id_evento) }}"
+								class="btn btn-info btn-sm"
+								>Ver</a
+							>
+							{% if evento.id_organizador == usuario.id %}
+							<a
+								href="{{ url_for('editar_evento', id=evento.id_evento) }}"
+								class="btn btn-warning btn-sm"
+								>Editar</a
+							>
+							<a
+								href="{{ url_for('eliminar_evento', id=evento.id_evento) }}"
+								class="btn btn-danger btn-sm"
+								onclick="return confirm('¿Estás seguro de querer eliminar este evento?')"
+								>Borrar</a
+							>
+							{% endif %}
+						</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="5" class="text-center">No hay eventos registrados</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<!-- para que podamos cerrar los mensajes flash -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>
